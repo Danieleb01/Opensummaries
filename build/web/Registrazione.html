@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>ChirpChirp! - Registrati</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link href="stile_sito.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    </head>
+    <body>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">Registrati su ChirpChirp!</span>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row justify-content-center">
+                    <div class="card text-center w-75 mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Registrati subito!</h5>
+                                <form method="post" id="registerForm">
+                                    <p class="card-text"><label for="username">Username</label></p>
+                                    <input type="text" id="username" required>
+                                    <br><p class="card-text"><label for="password">Password</label></p>
+                                    <input type="password" id="password" required>
+                                    <br><p class="card-text"><label for="email">E-mail</label></p>
+                                    <input type="text" id="email" required>
+                                    <br><p class="card-text"><label for="birthday">Data di nascita</label></p>
+                                    <input type="date" id="birthday" required>
+                                    <br><button type="submit" class="btn btn-primary">Registrati</button>
+                                </form>
+                            </div>
+                    </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                // Viene eseguito nel momento in cui il form di id registerForm viene inviato
+                $("#registerForm").submit(function(event) {
+                    event.preventDefault();
+                    // Reperisci tutti i dati
+                    const username= $("#username").val();
+                    const password= $("#password").val();
+                    const email= $("#email").val();
+                    const birthday= $("#birthday").val();
+                    // Url della servlet che si occupa dell'elaborazione
+                    const url= "/Twitter2_Prog3/Registrati";
+                    // Header della richiesta
+                    const header= {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"};
+                    $.ajax({    // Richiesta AJAX a /Registrati
+                        url: url,
+                        method: 'POST',
+                        headers: header,
+                        data: {username: username, password: password, email: email, birthdate: birthday},
+                        success: function(result) {
+                            alert("Registrazione effettuata!");
+                            window.location.replace('/Twitter2_Prog3/');
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert("Si è verificato un errore: " + xhr.responseText);
+                            
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

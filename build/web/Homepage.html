@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>ChirpChirp! - Dashboard utente</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link href="stile_sito.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body>
+         <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+            <a class="navbar-brand" href="/Twitter2_Prog3/Homepage">ChirpChirp!</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/Twitter2_Prog3/Profilo_Utente">Profilo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Twitter2_Prog3/LogOut">Esci</a>
+            </li>
+          </ul>
+        </div>
+            </div>
+    </nav>
+        <div id="aggiornamenti">
+            <h3 class="intestazioneCentrata">Cosa c'è di nuovo?</h3>
+            <br><p class="center" id="placeholder">Caricamento...</p>
+        </div>
+        <div class="col-sm-3">
+            <div class="card w-40">
+                <h5 class="card-header">Segui utente</h5>
+                <div class="card-body">
+                    <form id="followForm">
+                        <p class="card-text"><label for="username">Username dell'utente che vuoi seguire</label></p>
+                        <input type="text" id="username" required>
+                        <button class="btn btn-primary" type="submit">Segui</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {  // Viene eseguito una volta che il DOM è caricato
+                // Url della servlet che si occupa di restituire i post degli utenti seguiti
+                const url= '/Twitter2_Prog3/reperimento_PostSeguiti';
+                // Header per la richiesta AJAX
+                const header= {"Content-Type": "application/json"};
+                // Richiesta ajax
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    headers: header,
+                    // Nel caso in cui venga ottenuta una risposta con codice di stato 200...
+                    success: function(data) {
+                            // Ottieni container principale
+                            const aggiornamentiContainer= document.getElementById("aggiornamenti");
+                            // La lista dei post dalla posizione iniziale di data    
+                            //const posts= data[0];
+                            // Elimina la scritta 'caricamento'
+                            document.getElementById('placeholder').remove();
+                            // Per ogni dato ottenuto...
+                            data.forEach(function (userPosts) {
+                                // Effettua tale iterazione
+                                userPosts.forEach(function (post) {
+                                    // Crea quattro elementi di tipo div
+                                    let row= document.createElement('div');
+                                    let column= document.createElement('div');
+                                    let postDiv= document.createElement('div');
+                                    let cardBody= document.createElement('div');
+                                    // Crea intestazione di tipo h5
+                                    let author= document.createElement('h5');
+                                    // Crea paragrafo
+                                    let text= document.createElement('p');
+                                    // Crea intestazione di tipo h6
+                                    let hashtags= document.createElement('h6');
+                                    // Imposta, per ogni elemento, le classi opportune
+                                    row.classList.add('row');
+                                    row.classList.add('justify-content-around');
+                                    postDiv.classList.add('card');
+                                    postDiv.classList.add('w-75');
+                                    postDiv.classList.add('mb-3');
+                                    cardBody.classList.add('card-body');
+                                    author.classList.add('card-title');
+                                    text.classList.add('card-text');
+                                    hashtags.classList.add('card-subtitle');
+                                    hashtags.classList.add('mb-2');
+                                    hashtags.classList.add('text-body-secondary');
+                                    // Imposta i contenuti degli elementi contenuti in author e text
+                                    author.textContent= post.Author;
+                                    text.textContent= post.body;
+                                    if(post.hashtags !== undefined) // E se ci sono hashtag...
+                                        hashtags.textContent= post.hashtags.toString(); // Inserisce anche quelli
+                                    // Inserisce, nel div contenuto in card body, gli elementi presenti in author, text e hashtag
+                                    cardBody.append(author);
+                                    cardBody.append(text);
+                                    cardBody.append(hashtags);
+                                    // Inserisce, nel div contenuto in postDiv, quello contenuto in cardBody
+                                    postDiv.append(cardBody);
+                                    // Inserisce, nel div contenuto in row, quello contenuto in postDiv
+                                    row.append(postDiv);
+                                    // Inserisce, nel div contenuto in aggiornamentiContainer, quello contenuto in row
+                                    aggiornamentiContainer.append(row);
+                                });
+                            });
+                    }
+            });       
+                // Viene eseguito quando il form di id followForm viene inviato
+                $("#followForm").submit(function(event) {
+                    event.preventDefault(); // Blocca il comportamento di default
+                    // Header per la richiesta AJAX
+                    const header= {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"};
+                    // Ricava username dall'input di id username
+                    const username= $("#username").val();
+                    // Url della servlet che si occupa dell'elaborazione
+                    const url= "/Twitter2_Prog3/segui_Utente";
+                    // Richiesta AJAX
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        headers: header,
+                        data: {username: username},
+                        success: function() {   // In caso di successo...
+                            alert('Utente seguito!');   // Visualizza messaggio di esito positivo
+                            $("#username").val("");
+                            location.reload();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {    // Altrimenti...
+                            alert('Errore: ' + xhr.responseText);   // Visualizza messaggio di errore
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

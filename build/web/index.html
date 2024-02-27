@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>ChirpChirp - Accesso</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link href="stile_sito.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">ChirpChirp!</span>
+            </div>
+        </nav>
+        <div class="containerGeneral">
+            <div class="row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <div class="card w-75">
+                        <div class="card-body">
+                            <h5 class="card-title">Accedi come utente</h5>
+                            <form id="loginGuest" method="post">
+                                <p class="card-text"><label for="guestUsername">Username</label></p>
+                                <input type="text" id="guestUsername">
+                                <br><p class="card-text"><label for="guestPassword">Password</label></p>
+                                <input type="password" id="guestPassword">
+                                <br><button type="submit" class="btn btn-primary">Accedi</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card w-75">
+                        <div class="card-body">
+                            <h5 class="card-title">Accedi come amministratore</h5>
+                            <form id="loginAdmin" method="post">
+                                <p class="card-text"><label for="adminUsername">Username</label></p>
+                                <input type="text" id="adminUsername">
+                                <br><p class="card-text"><label for="adminPassword">Password</label></p>
+                                <input type="password" id="adminPassword">
+                                <br><button type="submit" class="btn btn-primary">Accedi</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <div class="card w-75">
+                        <div class="card-body">
+                            <h5 class="card-title">Sei nuovo?</h5>
+                            <p class="card-text">Registrati adesso!</p>
+                            <a href='/Twitter2_Prog3/Registrati' class="btn btn-info" role="button">Registrati</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                // Imposta header per le richieste
+                var header= {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"};
+                // Viene eseguito nel momento in cui il form di id loginGuest viene inviato
+                $("#loginGuest").submit(function(event) {
+                    event.preventDefault();
+                    // Reperisci dati
+                    const username= $("#guestUsername").val();
+                    const password= $("#guestPassword").val();
+                    const url= "/Twitter2_Prog3/GuestLogin";
+                    $.ajax({    // Richiesta a /GuestLogin
+                        url: url,
+                        method: 'POST',
+                        headers: header,
+                        data: {username: username, password: password},
+                        success: function() {   // Reindirizza alla homepage se tutto va bene
+                            window.location.replace('/Twitter2_Prog3/Homepage');
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) { // Altrimenti visualizza messaggio di errore
+                            alert('Errore: ' + xhr.responseText);
+                        }
+                    });
+                });
+                // Stessa logica di prima, ma url differente
+                $("#loginAdmin").submit(function() {
+                    event.preventDefault();
+                    const username= $("#adminUsername").val();
+                    const password= $("#adminPassword").val();
+                    const url= "/Twitter2_Prog3/AdminLogin";
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        headers: header,
+                        data: {username: username, password: password},
+                        success: function() {
+                            window.location.replace('/Twitter2_Prog3/AdminDashboard');
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert('Errore: ' + xhr.responseText);
+                        }
+                    });     
+                });            
+    });
+        </script>
+    </body>
+</html>
